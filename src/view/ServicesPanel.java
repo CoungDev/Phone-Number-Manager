@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -12,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,6 +26,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import controller.ServiceController;
+import modal.Service;
 import modal.Customer;
 import modal.Database;
 import modal.Service;
@@ -32,6 +39,7 @@ private JPanel formPanel;
 private JPanel rightPanel;
 private JButton addButton;
 private JButton deleteButton;
+final JTable table;
 
 public ServicesPanel() {
 setLayout(new GridLayout(2,1));
@@ -78,7 +86,7 @@ formPanel.add(durationField);
 JLabel priceLabel = new JLabel("Price: ");
 priceLabel.setForeground(Color.WHITE);
 formPanel.add(priceLabel);
-final JTextField priceField = new JTextField("$",20);
+final JTextField priceField = new JTextField(20);
 formPanel.add(priceField);
 
 
@@ -103,11 +111,26 @@ deleteButton.setBackground(Color.ORANGE);
 deleteButton.setMaximumSize(new Dimension(100, 50));
 deleteButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
+JButton editButton = new JButton("EDIT");
+editButton.setBackground(Color.ORANGE);
+editButton.setMaximumSize(new Dimension(100, 50));
+editButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+
+JButton clearButton = new JButton("CLEAR");
+clearButton.setBackground(Color.ORANGE);
+clearButton.setMaximumSize(new Dimension(100, 50));
+clearButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+
 rightPanel.add(Box.createVerticalGlue());
 rightPanel.add(addButton);
 rightPanel.add(Box.createVerticalGlue());
 rightPanel.add(deleteButton);
 rightPanel.add(Box.createVerticalGlue());
+rightPanel.add(editButton);
+rightPanel.add(Box.createVerticalGlue());
+rightPanel.add(clearButton);
+rightPanel.add(Box.createVerticalGlue());
+
 
 
 topPanel.add(formPanel, BorderLayout.WEST);
@@ -116,8 +139,8 @@ topPanel.add(rightPanel, BorderLayout.EAST);
 bottomPanel = new JPanel();
 bottomPanel.setLayout(new BorderLayout());
 String[] columnNames = {"ID", "Name", "Duration", "Price"};
-DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-final JTable table = new JTable(tableModel);
+final DefaultTableModel serviceTableModel = new DefaultTableModel(columnNames, 0);
+table = new JTable(serviceTableModel);
 table.getTableHeader().setReorderingAllowed(false);
 table.getTableHeader().setResizingAllowed(false);
 
@@ -128,25 +151,96 @@ for (Service service : services) {
   String duration = service.getDuration();
   double price = service.getPrice();
  
-  tableModel.addRow(new Object[] {id, name, duration, price});
+  serviceTableModel.addRow(new Object[] {id, name, duration, price});
 }
 
-table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-	  public void valueChanged(ListSelectionEvent event) {
+table.addMouseListener(new MouseAdapter() {
+	  public void mouseClicked(MouseEvent e) {
+	    // Get the selected row and column
 	    int row = table.getSelectedRow();
-	    
-	    String id = table.getValueAt(row, 0).toString();
-	    String name = table.getValueAt(row, 1).toString();
-	    String duration = table.getValueAt(row, 2).toString();
-	    String price = table.getValueAt(row, 3).toString();
+	    int col = table.getSelectedColumn();
+	    // Get the value at the selected cell
+	    Object value = table.getValueAt(row, col);
+	    // Update the form with the selected value
 
-	    idField.setText(id);
-	    nameField.setText(name);
-	    durationField.setText(duration);
-	    priceField.setText(price);
+	    idField.setText((String) table.getValueAt(row, 0));
+	    nameField.setText((String) table.getValueAt(row, 1));
+	    durationField.setText((String) table.getValueAt(row, 2));
+	   priceField.setText(Double.toString((double) table.getValueAt(row, 3)));
 	  }
 	});
 
+clearButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        // Set text fields to empty strings
+    	idField.setText("");
+        nameField.setText("");
+       durationField.setText("");
+       priceField.setText("");
+       table.clearSelection();
+    }
+});
+
+//action
+addButton.addActionListener(new ActionListener() {
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		 // Get data from form
+		String id = idField.getText();
+	    String name = nameField.getText();
+	    String duration = durationField.getText();
+	    double price = Double.parseDouble(priceField.getText());
+
+	    // Create a new Service object
+	    Service service = new Service(id, name, duration, price);
+
+	    // Insert the service into the database
+	    ServiceController db = new ServiceController();
+	    db.insertService(service, serviceTableModel);
+	    refreshTable();
+	}
+});
+
+deleteButton.addActionListener(new ActionListener() {
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		 int selectedRow = table.getSelectedRow();
+		  if (selectedRow == -1) {
+		    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Error", JOptionPane.ERROR_MESSAGE);
+		    return;
+		  }
+		  String serviceId = (String) table.getValueAt(selectedRow, 0);
+		  ServiceController db = new ServiceController();
+		  db.deleteService(serviceId);
+		  refreshTable();
+		  idField.setText("");
+	      nameField.setText("");
+	      durationField.setText("");
+	      priceField.setText("");
+	}
+});
+
+editButton.addActionListener(new ActionListener() {
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow == -1) {
+		    JOptionPane.showMessageDialog(null, "Please select a row to edit", "Error", JOptionPane.ERROR_MESSAGE);
+		    return;
+		  }
+		String serviceId = (String) table.getValueAt(selectedRow, 0);
+	    String name = nameField.getText();
+	    String duration = durationField.getText();
+	    double price = Double.parseDouble(priceField.getText());
+	    
+	    ServiceController db = new ServiceController();
+	    db.updateService(serviceId, name, duration, price);
+	    refreshTable();
+	}
+});
 
 JScrollPane scrollPane = new JScrollPane(table);
 bottomPanel.add(scrollPane, BorderLayout.CENTER);
@@ -155,5 +249,14 @@ bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
 add(topPanel);
 add(bottomPanel);
-}
+	}
+private void refreshTable() {
+	  List<Service> updatedServices = Database.getServices();
+	  DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+	  tableModel.setRowCount(0); // clear the existing data
+	  for (Service service : updatedServices) {
+	    Object[] rowData = { service.getId(), service.getName(), service.getDuration(), service.getPrice()};
+	    tableModel.addRow(rowData);
+	  }
+	}
 }

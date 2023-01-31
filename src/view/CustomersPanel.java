@@ -2,7 +2,7 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -37,8 +38,7 @@ import modal.Database;
 
 
 public class CustomersPanel extends JPanel {
-	public JButton addButton;
-	public JButton deleteButton;
+	final JTable table;
   public CustomersPanel() {
     setBackground(Color.decode("#34334D"));
 
@@ -66,7 +66,6 @@ public class CustomersPanel extends JPanel {
     	    BorderFactory.createLineBorder(Color.WHITE), "Action", 
     	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
     
-    rightPanel.setLayout(null); // disable layout manager
     rightPanel.setBackground(Color.decode("#34334D"));
 
     rightPanel.setBorder(BorderFactory.createTitledBorder(
@@ -74,26 +73,35 @@ public class CustomersPanel extends JPanel {
     	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 
     // create the buttons
-    addButton = new JButton("ADD");
-    deleteButton = new JButton("DELETE");
-    JButton editButton = new JButton("EDIT");
-    JButton clearButton = new JButton("CLEAR");
-    addButton.setBounds(70, 20, 100, 40);
-    deleteButton.setBounds(250, 20, 100, 40);
-    editButton.setBounds(70, 130, 100, 40);
-    clearButton.setBounds(250, 130, 100, 40);
-    
-    addButton.setBackground(Color.decode("#f58f0a"));
-    deleteButton.setBackground(Color.decode("#f58f0a"));
-    editButton.setBackground(Color.decode("#f58f0a"));
-    clearButton.setBackground(Color.decode("#f58f0a"));
-    clearButton.setBackground(Color.decode("#f58f0a"));
-    
+    JButton addButton = new JButton("ADD");
+    addButton.setBackground(Color.ORANGE);
+    addButton.setMaximumSize(new Dimension(100, 50));
+    addButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
+    JButton deleteButton = new JButton("DELETE");
+    deleteButton.setBackground(Color.ORANGE);
+    deleteButton.setMaximumSize(new Dimension(100, 50));
+    deleteButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+
+    JButton editButton = new JButton("EDIT");
+    editButton.setBackground(Color.ORANGE);
+    editButton.setMaximumSize(new Dimension(100, 50));
+    editButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+
+    JButton clearButton = new JButton("CLEAR");
+    clearButton.setBackground(Color.ORANGE);
+    clearButton.setMaximumSize(new Dimension(100, 50));
+    clearButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+    
+  
     rightPanel.add(addButton);
+    rightPanel.add(Box.createVerticalGlue());
     rightPanel.add(deleteButton);
+    rightPanel.add(Box.createVerticalGlue());
     rightPanel.add(editButton);
+    rightPanel.add(Box.createVerticalGlue());
     rightPanel.add(clearButton);
+    rightPanel.add(Box.createVerticalGlue());
 
     
     topPanel.setLayout(new GridLayout(1,2));
@@ -188,7 +196,7 @@ public class CustomersPanel extends JPanel {
     bottomPanel.setLayout(new BorderLayout());
     String[] columnNames = {"ID", "Name", "Birthday", "Gender", "Address", "Phone number"};
     final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-    final JTable table = new JTable(tableModel);
+    table = new JTable(tableModel);
     table.getTableHeader().setReorderingAllowed(false);
     table.getTableHeader().setResizingAllowed(false);
     
@@ -237,6 +245,7 @@ public class CustomersPanel extends JPanel {
             maleRadioButton.setSelected(false);
             femaleRadioButton.setSelected(false);
             addressField.setText("");
+            table.clearSelection();
 
         }
     });
@@ -265,6 +274,57 @@ public class CustomersPanel extends JPanel {
 		    // Insert the customer into the database
 		    CustomerController db = new CustomerController();
 		    db.insertCustomer(customer, tableModel);
+		    refreshTable();
+		}
+	});
+    
+    deleteButton.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			 int selectedRow = table.getSelectedRow();
+			  if (selectedRow == -1) {
+			    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Error", JOptionPane.ERROR_MESSAGE);
+			    return;
+			  }
+			  String customerId = (String) table.getValueAt(selectedRow, 0);
+			  
+			  CustomerController db = new CustomerController();
+			  db.deleteCustomer(customerId);
+			  refreshTable();
+			  idField.setText("");
+	          nameField.setText("");
+	          phoneNumberField.setText("");
+	          birthdayField.setText("");
+	          maleRadioButton.setSelected(false);
+	          femaleRadioButton.setSelected(false);
+	          addressField.setText("");
+		}
+	});
+    
+    editButton.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow == -1) {
+			    JOptionPane.showMessageDialog(null, "Please select a row to edit", "Error", JOptionPane.ERROR_MESSAGE);
+			    return;
+			  }
+			String customerId = (String) table.getValueAt(selectedRow, 0);
+			String name = nameField.getText();
+			String birthday = birthdayField.getText();
+			String gender = null;
+			  if(maleRadioButton.isSelected()) {
+			    	gender = "Male";
+			    } else if (femaleRadioButton.isSelected()) {
+			    	gender = "Female";
+			    }
+			String address = addressField.getText();
+			String phonenumber = phoneNumberField.getText();
+			CustomerController db = new CustomerController();
+			db.updateCustomer(customerId, name, birthday, gender, address, phonenumber);
+			refreshTable();
 		}
 	});
 
@@ -278,8 +338,21 @@ public class CustomersPanel extends JPanel {
     
     add(topPanel);
     add(bottomPanel);
+    
+    
 
   }
+  private void refreshTable() {
+	  List<Customer> updatedCustomers = Database.getCustomers();
+	  DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+	  tableModel.setRowCount(0); // clear the existing data
+	  for (Customer customer : updatedCustomers) {
+	    Object[] rowData = { customer.getId(), customer.getName(), customer.getBirthday(),
+	        customer.getGender(), customer.getAddress(), customer.getPhoneNumber() };
+	    tableModel.addRow(rowData);
+	  }
+	}
+
 
 }
 

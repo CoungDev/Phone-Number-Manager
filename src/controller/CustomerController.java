@@ -22,7 +22,7 @@ public class CustomerController {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
     //other methods
-    public void insertCustomer(Customer customer, DefaultTableModel tableModel) {
+    public void insertCustomer(Customer customer, DefaultTableModel customerTableModal) {
     	// Insert the customer into the database
     	try (Connection connection = CustomerController.getConnection();
     			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customers (id, name, birthday, gender, address, phone_number) VALUES (?, ?, ?, ?, ?, ?)")) {
@@ -34,15 +34,48 @@ public class CustomerController {
     		preparedStatement.setString(5, customer.getAddress());
     		preparedStatement.setString(6, customer.getPhoneNumber());
     		preparedStatement.executeUpdate();
-    		tableModel.addRow(new String[] { customer.getId(), customer.getName(), customer.getBirthday(),  customer.getGender(), customer.getAddress(), customer.getPhoneNumber()});
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
     	
     }
-    public void updateCustomer() {
-    	
+    
+    public void deleteCustomer(String id) {
+    	  int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this customer?", "Confirm", JOptionPane.YES_NO_OPTION);
+    	  if (confirm == JOptionPane.YES_OPTION) {
+    		  try {
+    		      Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    		      PreparedStatement statement = connection.prepareStatement("DELETE FROM customers WHERE id = ?");
+    		      statement.setString(1, id);
+    		      statement.executeUpdate();
+    		      JOptionPane.showMessageDialog(null, "Customer deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+    		      connection.close();
+    		    } catch (SQLException e) {
+    		      JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    		    }
+    	  }
     }
+    
+   
+    	  public void updateCustomer(String id, String name, String birthday, String gender, String address, String phoneNumber) {
+    	    try(Connection connection = CustomerController.getConnection();
+    	    		PreparedStatement statement = connection.prepareStatement("UPDATE customers SET name = ?, birthday = ?, gender = ?, address = ?, phone_number = ? WHERE id = ?");) {
+    	      
+    	      statement.setString(1, name);
+    	      statement.setString(2, birthday);
+    	      statement.setString(3, gender);
+    	      statement.setString(4, address);
+    	      statement.setString(5, phoneNumber);
+    	      statement.setString(6, id);
+    	      statement.executeUpdate();
+    	      statement.close();
+    	      connection.close();
+    	      JOptionPane.showMessageDialog(null, "UPDATED");
+    	    } catch (SQLException e) {
+    	      e.printStackTrace();
+    	    }
+    	  }
+    	
 }
 
 	
