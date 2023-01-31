@@ -6,8 +6,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -17,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -27,11 +31,14 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import controller.CustomerController;
 import modal.Customer;
 import modal.Database;
 
 
 public class CustomersPanel extends JPanel {
+	public JButton addButton;
+	public JButton deleteButton;
   public CustomersPanel() {
     setBackground(Color.decode("#34334D"));
 
@@ -67,8 +74,8 @@ public class CustomersPanel extends JPanel {
     	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 
     // create the buttons
-    JButton addButton = new JButton("ADD");
-    JButton deleteButton = new JButton("DELETE");
+    addButton = new JButton("ADD");
+    deleteButton = new JButton("DELETE");
     JButton editButton = new JButton("EDIT");
     JButton clearButton = new JButton("CLEAR");
     addButton.setBounds(70, 20, 100, 40);
@@ -81,7 +88,7 @@ public class CustomersPanel extends JPanel {
     editButton.setBackground(Color.decode("#f58f0a"));
     clearButton.setBackground(Color.decode("#f58f0a"));
     clearButton.setBackground(Color.decode("#f58f0a"));
-
+    
 
     rightPanel.add(addButton);
     rightPanel.add(deleteButton);
@@ -92,6 +99,7 @@ public class CustomersPanel extends JPanel {
     topPanel.setLayout(new GridLayout(1,2));
     topPanel.add(formPanel);
     topPanel.add(rightPanel);
+    
 
 
     // Create the form labels and text fields
@@ -99,7 +107,7 @@ public class CustomersPanel extends JPanel {
     idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField idField = new JTextField();
     idField.setColumns(10);
-    idField.setEditable(false);
+  
     
     JLabel nameLabel = new JLabel("Name:");
     nameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -179,7 +187,7 @@ public class CustomersPanel extends JPanel {
     
     bottomPanel.setLayout(new BorderLayout());
     String[] columnNames = {"ID", "Name", "Birthday", "Gender", "Address", "Phone number"};
-    DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+    final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
     final JTable table = new JTable(tableModel);
     table.getTableHeader().setReorderingAllowed(false);
     table.getTableHeader().setResizingAllowed(false);
@@ -203,11 +211,11 @@ public class CustomersPanel extends JPanel {
     	    // Get the value at the selected cell
     	    Object value = table.getValueAt(row, col);
     	    // Update the form with the selected value
-    	    // You will need to adjust this code based on the specific form fields you have
+
     	    idField.setText((String) table.getValueAt(row, 0));
     	    nameField.setText((String) table.getValueAt(row, 1));
     	    birthdayField.setText((String) table.getValueAt(row, 2));
-    	    // You will need to handle the gender field separately since it is a radio button
+
     	    String gender = (String) table.getValueAt(row, 3);
     	    if (gender.equals("Male")) {
     	      maleRadioButton.setSelected(true);
@@ -218,6 +226,48 @@ public class CustomersPanel extends JPanel {
     	    phoneNumberField.setText((String) table.getValueAt(row, 5));
     	  }
     	});
+    
+    clearButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            // Set text fields to empty strings
+        	idField.setText("");
+            nameField.setText("");
+            phoneNumberField.setText("");
+            birthdayField.setText("");
+            maleRadioButton.setSelected(false);
+            femaleRadioButton.setSelected(false);
+            addressField.setText("");
+
+        }
+    });
+
+  //action
+    addButton.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			 // Get data from form
+			String id = idField.getText();
+		    String name = nameField.getText();
+		    String phoneNumber = phoneNumberField.getText();
+		    String address = addressField.getText();
+		    String birthday = birthdayField.getText();
+		    String gender = null;
+		    if(maleRadioButton.isSelected()) {
+		    	gender = "Male";
+		    } else if (femaleRadioButton.isSelected()) {
+		    	gender = "Female";
+		    }
+
+		    // Create a new Customer object
+		    Customer customer = new Customer(id, name, birthday, gender, address, phoneNumber);
+
+		    // Insert the customer into the database
+		    CustomerController db = new CustomerController();
+		    db.insertCustomer(customer, tableModel);
+		}
+	});
+
 
     
     JScrollPane scrollPane = new JScrollPane(table);
@@ -230,6 +280,7 @@ public class CustomersPanel extends JPanel {
     add(bottomPanel);
 
   }
+
 }
 
 

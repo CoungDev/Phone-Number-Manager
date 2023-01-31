@@ -8,6 +8,7 @@ public class Database {
   private static final String URL = "jdbc:mysql://localhost/phone_number_manager";
   private static final String USERNAME = "CUONG";
   private static final String PASSWORD = "Dc@25072004";
+  private Connection connection;
 
   
   public static  List<Customer> getCustomers() {
@@ -51,22 +52,21 @@ public class Database {
   }
   
   public static List<Invoice> getInvoices(){
-	  List<Invoice> invoices = new ArrayList<>();
-	  try(Connection connection = DriverManager.getConnection(URL,USERNAME,PASSWORD)) {
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("SELECT c.id, c.name, c.phone_number, SUM(s.price) AS total_payment FROM customers c JOIN invoices i ON c.id = i.customer_id JOIN services s ON i.service_id = s.id GROUP BY c.id");
-		while(resultSet.next()) {
-			String id = resultSet.getString("c.id");
-			String name = resultSet.getString("c.name");
-			String phoneNumber = resultSet.getString("c.phone_number");
-			double total = resultSet.getDouble("total_payment");
-			invoices.add(new Invoice(id, name, phoneNumber, total));
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	  return invoices;
+      List<Invoice> invoices = new ArrayList<>();
+      try(Connection connection = DriverManager.getConnection(URL,USERNAME,PASSWORD)) {
+          Statement statement = connection.createStatement();
+          ResultSet resultSet = statement.executeQuery("SELECT c.id, c.name, c.phone_number, SUM(s.price) AS total_payment FROM customers c JOIN invoices i ON c.id = i.customer_id JOIN services s ON i.service_id = s.id GROUP BY c.id");
+          while(resultSet.next()) {
+              String id = resultSet.getString("c.id");
+              String name = resultSet.getString("c.name");
+              String phoneNumber = resultSet.getString("c.phone_number");
+              double total = resultSet.getDouble("total_payment");
+              invoices.add(new Invoice(id, name, phoneNumber, total));
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return invoices;
   }
-  
-  
+
 }
