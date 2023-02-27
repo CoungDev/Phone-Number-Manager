@@ -42,16 +42,13 @@ public class CustomersPanel extends JPanel {
   public CustomersPanel() {
     setBackground(Color.decode("#34334D"));
 
-    // Set the layout manager
     setLayout(new GridLayout(2, 1));
 
-    // Create the top and bottom panels
     JPanel topPanel = new JPanel();
     topPanel.setBackground(Color.decode("#34334D"));
     JPanel bottomPanel = new JPanel();
     bottomPanel.setBackground(Color.decode("#34334D"));
 
-    // Create the form panel
     JPanel formPanel = new JPanel();
     formPanel.setMinimumSize(new Dimension(250, 0));
     formPanel.setMaximumSize(new Dimension(350, 0));
@@ -72,7 +69,6 @@ public class CustomersPanel extends JPanel {
     	    BorderFactory.createLineBorder(Color.WHITE), "Action", 
     	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 
-    // create the buttons
     JButton addButton = new JButton("ADD");
     addButton.setBackground(Color.ORANGE);
     addButton.setMaximumSize(new Dimension(100, 50));
@@ -93,7 +89,11 @@ public class CustomersPanel extends JPanel {
     clearButton.setMaximumSize(new Dimension(100, 50));
     clearButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
     
-  
+    JButton searchButton = new JButton("SEARCH");
+    searchButton.setBackground(Color.ORANGE);
+    searchButton.setMaximumSize(new Dimension(100, 50));
+    searchButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+    
     rightPanel.add(addButton);
     rightPanel.add(Box.createVerticalGlue());
     rightPanel.add(deleteButton);
@@ -101,6 +101,8 @@ public class CustomersPanel extends JPanel {
     rightPanel.add(editButton);
     rightPanel.add(Box.createVerticalGlue());
     rightPanel.add(clearButton);
+    rightPanel.add(Box.createVerticalGlue());
+    rightPanel.add(searchButton);
     rightPanel.add(Box.createVerticalGlue());
 
     
@@ -110,7 +112,6 @@ public class CustomersPanel extends JPanel {
     
 
 
-    // Create the form labels and text fields
     JLabel idLabel = new JLabel("ID:");
     idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField idField = new JTextField();
@@ -156,7 +157,6 @@ public class CustomersPanel extends JPanel {
     final JTextField phoneNumberField = new JTextField();
     phoneNumberField.setColumns(10);
     
- // Set the color of the labels
     idLabel.setForeground(Color.WHITE);
     nameLabel.setForeground(Color.WHITE);
     birthdayLabel.setForeground(Color.WHITE);
@@ -164,13 +164,10 @@ public class CustomersPanel extends JPanel {
     addressLabel.setForeground(Color.WHITE);
     phoneNumberLabel.setForeground(Color.WHITE);
 
-    // Create the form panel with the labels and text fields
     JPanel formFieldsPanel = new JPanel();
     formFieldsPanel.setBackground(Color.decode("#34334D"));
- // Set the layout of the form fields panel to a GridLayout
     formFieldsPanel.setLayout(new GridLayout(7, 2));
 
-    // Add the form fields to the form fields panel
     formFieldsPanel.add(idLabel);
     formFieldsPanel.add(idField);
     formFieldsPanel.add(nameLabel);
@@ -184,12 +181,10 @@ public class CustomersPanel extends JPanel {
     formFieldsPanel.add(phoneNumberLabel);
     formFieldsPanel.add(phoneNumberField);
 
-    // Create a border for the form panel
     formFieldsPanel.setBorder(BorderFactory.createTitledBorder(
     BorderFactory.createLineBorder(Color.WHITE), "Customer Infomation", 
     TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 
-    // Add the form fields panel to the form panel
     formPanel.add(formFieldsPanel, BorderLayout.CENTER);
   
     
@@ -213,12 +208,9 @@ public class CustomersPanel extends JPanel {
     
     table.addMouseListener(new MouseAdapter() {
     	  public void mouseClicked(MouseEvent e) {
-    	    // Get the selected row and column
     	    int row = table.getSelectedRow();
     	    int col = table.getSelectedColumn();
-    	    // Get the value at the selected cell
     	    Object value = table.getValueAt(row, col);
-    	    // Update the form with the selected value
 
     	    idField.setText((String) table.getValueAt(row, 0));
     	    nameField.setText((String) table.getValueAt(row, 1));
@@ -237,7 +229,6 @@ public class CustomersPanel extends JPanel {
     
     clearButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            // Set text fields to empty strings
         	idField.setText("");
             nameField.setText("");
             phoneNumberField.setText("");
@@ -268,10 +259,8 @@ public class CustomersPanel extends JPanel {
 		    	gender = "Female";
 		    }
 
-		    // Create a new Customer object
 		    Customer customer = new Customer(id, name, birthday, gender, address, phoneNumber);
 
-		    // Insert the customer into the database
 		    CustomerController db = new CustomerController();
 		    db.insertCustomer(customer, tableModel);
 		    refreshTable();
@@ -329,6 +318,36 @@ public class CustomersPanel extends JPanel {
 	});
 
 
+    searchButton.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String searchQuery = nameField.getText();
+			int rowCount = table.getRowCount();
+			int resultRow = -1;
+			for(int i = 0; i < rowCount; i++) {
+				String compareRs = (String) table.getValueAt(i, 1);
+				if(compareRs.equals(searchQuery)) {
+					resultRow = i;
+					break;
+				}
+			}
+			if(resultRow != -1) {
+				idField.setText((String) table.getValueAt(resultRow, 0));
+				nameField.setText((String) table.getValueAt(resultRow, 1));
+				birthdayField.setText((String) table.getValueAt(resultRow, 2));
+				if((boolean) table.getValueAt(resultRow, 3).equals("Male")) {
+					maleRadioButton.setSelected(true);
+				} else if ((boolean) table.getValueAt(resultRow, 3).equals("Female")) {
+					femaleRadioButton.setSelected(true);
+				}
+				addressField.setText((String) table.getValueAt(resultRow, 4));
+				phoneNumberField.setText((String) table.getValueAt(resultRow, 5));
+			}
+			
+			table.addRowSelectionInterval(resultRow, resultRow);
+		}
+	});
     
     JScrollPane scrollPane = new JScrollPane(table);
 

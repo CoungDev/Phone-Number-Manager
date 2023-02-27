@@ -156,12 +156,9 @@ for (Service service : services) {
 
 table.addMouseListener(new MouseAdapter() {
 	  public void mouseClicked(MouseEvent e) {
-	    // Get the selected row and column
 	    int row = table.getSelectedRow();
 	    int col = table.getSelectedColumn();
-	    // Get the value at the selected cell
 	    Object value = table.getValueAt(row, col);
-	    // Update the form with the selected value
 
 	    idField.setText((String) table.getValueAt(row, 0));
 	    nameField.setText((String) table.getValueAt(row, 1));
@@ -172,7 +169,6 @@ table.addMouseListener(new MouseAdapter() {
 
 clearButton.addActionListener(new ActionListener() {
     public void actionPerformed(ActionEvent e) {
-        // Set text fields to empty strings
     	idField.setText("");
         nameField.setText("");
        durationField.setText("");
@@ -186,16 +182,13 @@ addButton.addActionListener(new ActionListener() {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		 // Get data from form
 		String id = idField.getText();
 	    String name = nameField.getText();
 	    String duration = durationField.getText();
 	    double price = Double.parseDouble(priceField.getText());
 
-	    // Create a new Service object
 	    Service service = new Service(id, name, duration, price);
 
-	    // Insert the service into the database
 	    ServiceController db = new ServiceController();
 	    db.insertService(service, serviceTableModel);
 	    refreshTable();

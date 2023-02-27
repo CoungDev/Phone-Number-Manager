@@ -19,9 +19,11 @@ public class MainPanel extends JPanel {
 
     // Add the invoices panel to the main panel
     add(new InvoicesPanel(), "Invoices");
+    
 
     // Add the account panel to the main panel
     add(new AccountPanel(), "Account");
+    
   }
 }
 
