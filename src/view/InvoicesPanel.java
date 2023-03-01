@@ -22,14 +22,14 @@ public InvoicesPanel() {
 setLayout(new BorderLayout());
 setBackground(Color.decode("#34334D"));
 
-// Add the "Invoices" label to the top of the panel
-JLabel invoicesLabel = new JLabel("Invoices");
+
+JLabel invoicesLabel = new JLabel("Hóa đơn");
 invoicesLabel.setForeground(Color.white);
 invoicesLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 invoicesLabel.setHorizontalAlignment(JLabel.CENTER);
 add(invoicesLabel, BorderLayout.NORTH);
 
-// Create the table and add it to the center of the panel
+
 String[] columnNames = {"ID", "Name", "Phone number", "Total payment"};
 DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 table = new JTable(tableModel);
@@ -47,5 +47,5 @@ for (Invoice invoice : invoices) {
 
 JScrollPane scrollPane = new JScrollPane(table);
 add(scrollPane, BorderLayout.CENTER);
-}
+	}
 }

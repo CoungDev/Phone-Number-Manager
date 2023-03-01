@@ -20,21 +20,17 @@ public class Sidebar extends JPanel {
   public Sidebar(JPanel mainPanel) {
     this.mainPanel = mainPanel;
 
-    // Set the layout manager
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    // Set the background color
     setBackground(Color.decode("#87CEEB"));
 
-    // Set the preferred size of the sidebar
     setPreferredSize(new Dimension(150, 0));
 
-    // Add some buttons to the sidebar
-    add(createButton("Home", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\home.png"));
-    add(createButton("Customers", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\customer.png"));
-    add(createButton("Services", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\cart.png"));
-    add(createButton("Invoices", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\bill.png"));
-    add(createButton("Account", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\user.png"));
+    add(createButton("Trang chủ", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\home.png"));
+    add(createButton("Khách hàng", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\customer.png"));
+    add(createButton("Dịch vụ", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\cart.png"));
+    add(createButton("Hóa đơn", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\bill.png"));
+    add(createButton("Tài khoản", "C:\\Users\\Admin\\eclipse-workspace\\DoAn2\\src\\view\\user.png"));
   }
   
   private JButton createButton(final String text, String iconName) {
@@ -47,22 +43,22 @@ public class Sidebar extends JPanel {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 	  
-	    	 // Reset the background color of the previously selected button, if it is not the "Account" button
-	    	  if (selectedButton != null && !selectedButton.getText().equals("Account")) {
+	    	 // Reset the background color 
+	    	  if (selectedButton != null && !selectedButton.getText().equals("Tài khoản")) {
 	    	    selectedButton.setBackground(Color.decode("#6495ED"));
 	    	  }
-	    	  // Set the background color of the currently selected button, if it is not the "Account" button
-	    	  if (!button.getText().equals("Account")) {
+	    	  // TK
+	    	  if (!button.getText().equals("Tài khoản")) {
 	    	    button.setBackground(Color.decode("#90EE90"));
 	    	  }
 	    	  selectedButton = button;
 
-	      // Show the corresponding panel in the main panel
+	      // Show card
 	      CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
 	      cardLayout.show(mainPanel, text);
 	    }
 	  });
-	  if (text.equals("Account")) {
+	  if (text.equals("Tài khoản")) {
 	        button.setBackground(getBackground());
 	        button.setBorder(null);
 	        add(Box.createVerticalGlue());

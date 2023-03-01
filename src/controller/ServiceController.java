@@ -21,10 +21,10 @@ public class ServiceController {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
-    //other methods
+    
     public void insertService(Service service, DefaultTableModel serviceTableModel) {
-    	// Insert the service into the database
-    	try (Connection connection = CustomerController.getConnection();
+    	
+    	try (Connection connection = ServiceController.getConnection();
     			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO services (id, name, duration, price) VALUES (?, ?, ?, ?)")) {
     		
     		preparedStatement.setString(1, service.getId());
@@ -54,7 +54,7 @@ public class ServiceController {
   }
     
     public void updateService(String id, String name, String duration, double price) {
-	    try(Connection connection = CustomerController.getConnection();
+	    try(Connection connection = ServiceController.getConnection();
 	    		PreparedStatement statement = connection.prepareStatement("UPDATE services SET name = ?, duration = ?, price = ? WHERE id = ?");) {
 	      
 	      statement.setString(1, name);

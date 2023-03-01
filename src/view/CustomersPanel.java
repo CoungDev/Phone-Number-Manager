@@ -41,11 +41,11 @@ public class CustomersPanel extends JPanel {
 	final JTable table;
   public CustomersPanel() {
     setBackground(Color.decode("#34334D"));
-
     setLayout(new GridLayout(2, 1));
 
     JPanel topPanel = new JPanel();
     topPanel.setBackground(Color.decode("#34334D"));
+    
     JPanel bottomPanel = new JPanel();
     bottomPanel.setBackground(Color.decode("#34334D"));
 
@@ -60,36 +60,32 @@ public class CustomersPanel extends JPanel {
     rightPanel.setBackground(Color.decode("#34334D"));
     rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
     rightPanel.setBorder(BorderFactory.createTitledBorder(
-    	    BorderFactory.createLineBorder(Color.WHITE), "Action", 
-    	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
+    BorderFactory.createLineBorder(Color.WHITE), "Điều khiển", 
+    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
     
-    rightPanel.setBackground(Color.decode("#34334D"));
+   
 
-    rightPanel.setBorder(BorderFactory.createTitledBorder(
-    	    BorderFactory.createLineBorder(Color.WHITE), "Action", 
-    	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
-
-    JButton addButton = new JButton("ADD");
+    JButton addButton = new JButton("Thêm");
     addButton.setBackground(Color.ORANGE);
     addButton.setMaximumSize(new Dimension(100, 50));
     addButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-    JButton deleteButton = new JButton("DELETE");
+    JButton deleteButton = new JButton("Xóa");
     deleteButton.setBackground(Color.ORANGE);
     deleteButton.setMaximumSize(new Dimension(100, 50));
     deleteButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-    JButton editButton = new JButton("EDIT");
+    JButton editButton = new JButton("Sửa");
     editButton.setBackground(Color.ORANGE);
     editButton.setMaximumSize(new Dimension(100, 50));
     editButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-    JButton clearButton = new JButton("CLEAR");
+    JButton clearButton = new JButton("Hủy");
     clearButton.setBackground(Color.ORANGE);
     clearButton.setMaximumSize(new Dimension(100, 50));
     clearButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
     
-    JButton searchButton = new JButton("SEARCH");
+    JButton searchButton = new JButton("Tìm");
     searchButton.setBackground(Color.ORANGE);
     searchButton.setMaximumSize(new Dimension(100, 50));
     searchButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
@@ -111,26 +107,26 @@ public class CustomersPanel extends JPanel {
     topPanel.add(rightPanel);
     
 
-
+    //FORM
     JLabel idLabel = new JLabel("ID:");
     idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField idField = new JTextField();
     idField.setColumns(10);
   
     
-    JLabel nameLabel = new JLabel("Name:");
+    JLabel nameLabel = new JLabel("Tên:");
     nameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField nameField = new JTextField();
     nameField.setColumns(10);
     
-    JLabel birthdayLabel = new JLabel("Birthday:");
+    JLabel birthdayLabel = new JLabel("Ngày sinh:");
     final JTextField birthdayField = new JTextField("mm/dd/yyyy", 10);
 
     
-    JLabel genderLabel = new JLabel("Gender:");
+    JLabel genderLabel = new JLabel("Giới tính:");
     genderLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-    final JRadioButton maleRadioButton = new JRadioButton("Male");
-    final JRadioButton femaleRadioButton = new JRadioButton("Female");
+    final JRadioButton maleRadioButton = new JRadioButton("Nam");
+    final JRadioButton femaleRadioButton = new JRadioButton("Nữ");
     ButtonGroup genderGroup = new ButtonGroup();
     genderGroup.add(maleRadioButton);
     genderGroup.add(femaleRadioButton);
@@ -147,12 +143,12 @@ public class CustomersPanel extends JPanel {
     genderPanel.add(maleRadioButton);
     genderPanel.add(femaleRadioButton);
     
-    JLabel addressLabel = new JLabel("Address:");
+    JLabel addressLabel = new JLabel("Địa chỉ:");
     addressLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField addressField = new JTextField();
     addressField.setColumns(10);
     
-    JLabel phoneNumberLabel = new JLabel("Phone number:");
+    JLabel phoneNumberLabel = new JLabel("Số điện thoại:");
     phoneNumberLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     final JTextField phoneNumberField = new JTextField();
     phoneNumberField.setColumns(10);
@@ -182,14 +178,14 @@ public class CustomersPanel extends JPanel {
     formFieldsPanel.add(phoneNumberField);
 
     formFieldsPanel.setBorder(BorderFactory.createTitledBorder(
-    BorderFactory.createLineBorder(Color.WHITE), "Customer Infomation", 
+    BorderFactory.createLineBorder(Color.WHITE), "Thông tin khách hàng", 
     TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 
     formPanel.add(formFieldsPanel, BorderLayout.CENTER);
   
     
     bottomPanel.setLayout(new BorderLayout());
-    String[] columnNames = {"ID", "Name", "Birthday", "Gender", "Address", "Phone number"};
+    String[] columnNames = {"ID", "Tên", "Ngày sinh", "Giới tính", "Địa chỉ", "SĐT"};
     final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
     table = new JTable(tableModel);
     table.getTableHeader().setReorderingAllowed(false);
@@ -241,7 +237,7 @@ public class CustomersPanel extends JPanel {
         }
     });
 
-  //action
+  //Insert
     addButton.addActionListener(new ActionListener() {
 		
 		@Override
@@ -254,9 +250,9 @@ public class CustomersPanel extends JPanel {
 		    String birthday = birthdayField.getText();
 		    String gender = null;
 		    if(maleRadioButton.isSelected()) {
-		    	gender = "Male";
+		    	gender = "Nam";
 		    } else if (femaleRadioButton.isSelected()) {
-		    	gender = "Female";
+		    	gender = "Nữ";
 		    }
 
 		    Customer customer = new Customer(id, name, birthday, gender, address, phoneNumber);
@@ -267,13 +263,14 @@ public class CustomersPanel extends JPanel {
 		}
 	});
     
+    //Delete
     deleteButton.addActionListener(new ActionListener() {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			 int selectedRow = table.getSelectedRow();
 			  if (selectedRow == -1) {
-			    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Error", JOptionPane.ERROR_MESSAGE);
+			    JOptionPane.showMessageDialog(null, "Hãy chọn dữ liệu để xóa", "Error", JOptionPane.ERROR_MESSAGE);
 			    return;
 			  }
 			  String customerId = (String) table.getValueAt(selectedRow, 0);
@@ -288,16 +285,18 @@ public class CustomersPanel extends JPanel {
 	          maleRadioButton.setSelected(false);
 	          femaleRadioButton.setSelected(false);
 	          addressField.setText("");
+	          ((HomePanel) getParent()).updateData();
 		}
 	});
     
+    //Edit
     editButton.addActionListener(new ActionListener() {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int selectedRow = table.getSelectedRow();
 			if (selectedRow == -1) {
-			    JOptionPane.showMessageDialog(null, "Please select a row to edit", "Error", JOptionPane.ERROR_MESSAGE);
+			    JOptionPane.showMessageDialog(null, "Hãy chọn dữ liệu để sửa", "Error", JOptionPane.ERROR_MESSAGE);
 			    return;
 			  }
 			String customerId = (String) table.getValueAt(selectedRow, 0);
@@ -305,9 +304,9 @@ public class CustomersPanel extends JPanel {
 			String birthday = birthdayField.getText();
 			String gender = null;
 			  if(maleRadioButton.isSelected()) {
-			    	gender = "Male";
+			    	gender = "Nam";
 			    } else if (femaleRadioButton.isSelected()) {
-			    	gender = "Female";
+			    	gender = "Nữ";
 			    }
 			String address = addressField.getText();
 			String phonenumber = phoneNumberField.getText();
@@ -317,7 +316,7 @@ public class CustomersPanel extends JPanel {
 		}
 	});
 
-
+    //Search by name
     searchButton.addActionListener(new ActionListener() {
 		
 		@Override
@@ -336,9 +335,9 @@ public class CustomersPanel extends JPanel {
 				idField.setText((String) table.getValueAt(resultRow, 0));
 				nameField.setText((String) table.getValueAt(resultRow, 1));
 				birthdayField.setText((String) table.getValueAt(resultRow, 2));
-				if((boolean) table.getValueAt(resultRow, 3).equals("Male")) {
+				if((boolean) table.getValueAt(resultRow, 3).equals("Name")) {
 					maleRadioButton.setSelected(true);
-				} else if ((boolean) table.getValueAt(resultRow, 3).equals("Female")) {
+				} else if ((boolean) table.getValueAt(resultRow, 3).equals("Nữ")) {
 					femaleRadioButton.setSelected(true);
 				}
 				addressField.setText((String) table.getValueAt(resultRow, 4));

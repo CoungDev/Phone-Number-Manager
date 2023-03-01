@@ -10,6 +10,10 @@ public class Database {
   private static final String PASSWORD = "Dc@25072004";
   private Connection connection;
 
+
+  public static Connection getConnection() throws SQLException {
+      return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+  }
   
   public static  List<Customer> getCustomers() {
     List<Customer> customers = new ArrayList<>();

@@ -61,7 +61,7 @@ formPanel.setBackground(Color.decode("#34334D"));
  formPanel = new JPanel();
 formPanel.setLayout(new GridLayout(6, 2));
 formPanel.setBorder(BorderFactory.createTitledBorder(
-	    BorderFactory.createLineBorder(Color.WHITE), "Service Infomation", 
+	    BorderFactory.createLineBorder(Color.WHITE), "Thông tin dịch vụ", 
 	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));;
 formPanel.setBackground(Color.decode("#34334D"));
 
@@ -71,19 +71,19 @@ formPanel.add(idLabel);
 final JTextField idField = new JTextField(20);
 formPanel.add(idField);
 
-JLabel nameLabel = new JLabel("Name: ");
+JLabel nameLabel = new JLabel("Tên dịch vụ: ");
 nameLabel.setForeground(Color.WHITE);
 formPanel.add(nameLabel);
 final JTextField nameField = new JTextField(20);
 formPanel.add(nameField);
 
-JLabel durationLabel = new JLabel("Duration: ");
+JLabel durationLabel = new JLabel("Thời hạn: ");
 durationLabel.setForeground(Color.WHITE);
 formPanel.add(durationLabel);
-final JTextField durationField = new JTextField("mm/dd/yyyy",10);
+final JTextField durationField = new JTextField(10);
 formPanel.add(durationField);
 
-JLabel priceLabel = new JLabel("Price: ");
+JLabel priceLabel = new JLabel("Giá: ");
 priceLabel.setForeground(Color.WHITE);
 formPanel.add(priceLabel);
 final JTextField priceField = new JTextField(20);
@@ -97,26 +97,26 @@ rightPanel = new JPanel();
 rightPanel.setPreferredSize(new Dimension(350, 0));
 rightPanel.setBackground(Color.decode("#34334D"));
 rightPanel.setBorder(BorderFactory.createTitledBorder(
-	    BorderFactory.createLineBorder(Color.WHITE), "Action", 
+	    BorderFactory.createLineBorder(Color.WHITE), "Điều khiển", 
 	    TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.PLAIN, 18), Color.WHITE));
 rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-JButton addButton = new JButton("ADD");
+JButton addButton = new JButton("Thêm");
 addButton.setBackground(Color.ORANGE);
 addButton.setMaximumSize(new Dimension(100, 50));
 addButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-JButton deleteButton = new JButton("DELETE");
+JButton deleteButton = new JButton("Xóa");
 deleteButton.setBackground(Color.ORANGE);
 deleteButton.setMaximumSize(new Dimension(100, 50));
 deleteButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-JButton editButton = new JButton("EDIT");
+JButton editButton = new JButton("Sửa");
 editButton.setBackground(Color.ORANGE);
 editButton.setMaximumSize(new Dimension(100, 50));
 editButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
-JButton clearButton = new JButton("CLEAR");
+JButton clearButton = new JButton("Hủy");
 clearButton.setBackground(Color.ORANGE);
 clearButton.setMaximumSize(new Dimension(100, 50));
 clearButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
@@ -138,7 +138,7 @@ topPanel.add(rightPanel, BorderLayout.EAST);
 
 bottomPanel = new JPanel();
 bottomPanel.setLayout(new BorderLayout());
-String[] columnNames = {"ID", "Name", "Duration", "Price"};
+String[] columnNames = {"ID", "Tên dịch vụ", "Thời hạn", "Giá"};
 final DefaultTableModel serviceTableModel = new DefaultTableModel(columnNames, 0);
 table = new JTable(serviceTableModel);
 table.getTableHeader().setReorderingAllowed(false);
